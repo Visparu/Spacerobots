@@ -33,12 +33,6 @@ public final class GameInfo
 	public static final double BULLET_SPEED  = 5.0;
 	public static final double BULLET_DAMAGE = 10;
 	
-	public static final double ROCKET_SIZE            = 15.0;
-	public static final double ROCKET_SPEED           = 3.5;
-	public static final double ROCKET_HOMING_ACCURACY = 0.05;
-	public static final double ROCKET_HOMING_RANGE    = 150;
-	public static final double ROCKET_DAMAGE          = 20;
-	
 	public static final double ASTEROID_SIZE   = 30.0;
 	public static final double ASTEROID_SPEED  = 10.0;
 	public static final double ASTEROID_DAMAGE = 25.0;
@@ -48,6 +42,4 @@ public final class GameInfo
 	public static final double ENERGY_MOVE_BASE       = 3;                                     // To avoid spam moving
 	public static final double ENERGY_MOVE_MULTIPLIER = 90;                                    // One full power move every two turns
 	public static final double ENERGY_BULLET_BASE     = 850.0;                                 // A little less than two bullets per second
-	public static final double ENERGY_ROCKET_BASE     = 1000.0;                                // Three rockets in two seconds with no homing ability
-	public static final double ENERGY_ROCKET_HOMING   = 3.3333333333333333333333333333333;     // Maximum of 5 seconds homing
 }

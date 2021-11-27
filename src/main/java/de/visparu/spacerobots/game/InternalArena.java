@@ -11,7 +11,6 @@ import de.visparu.spacerobots.game.entities.graphics.particles.Explosion;
 import de.visparu.spacerobots.game.entities.internal.Asteroid;
 import de.visparu.spacerobots.game.entities.internal.Bullet;
 import de.visparu.spacerobots.game.entities.internal.InternalRobot;
-import de.visparu.spacerobots.game.entities.internal.Rocket;
 import de.visparu.spacerobots.gui.MainMenu;
 import de.visparu.spacerobots.settings.GameInfo;
 import de.visparu.spacerobots.settings.GraphicsInfo;
@@ -23,7 +22,6 @@ public final class InternalArena
 	
 	private List<InternalRobot> robots;
 	private List<Bullet>        bullets;
-	private List<Rocket>        rockets;
 	private List<Asteroid>      asteroids;
 	
 	private List<Explosion> explosions;
@@ -89,15 +87,9 @@ public final class InternalArena
 		}
 	}
 	
-	public void addRocket(final Rocket rocket)
-	{
-		this.rockets.add(rocket);
-	}
-	
 	private void calculateCollisions()
 	{
 		final var bulletDamage   = GameInfo.BULLET_DAMAGE;
-		final var rocketDamage   = GameInfo.ROCKET_DAMAGE;
 		final var asteroidDamage = GameInfo.ASTEROID_DAMAGE;
 		
 		final var collisionDrag = GameInfo.COLLISION_DRAG;
@@ -124,24 +116,6 @@ public final class InternalArena
 					if (this.winnerIteration == -1)
 					{
 						robot.subtractHealth(bulletDamage);
-					}
-				}
-			}
-			for (var j = 0; j < this.rockets.size(); j++)
-			{
-				final var rocket = this.rockets.get(j);
-				if (rocket.getShooter() == robot)
-				{
-					continue;
-				}
-				if (robot.getBounds().intersects(rocket.getBounds()))
-				{
-					this.explosions.add(Explosion.rocket(rocket.getPosition()));
-					this.rockets.remove(j);
-					j--;
-					if (this.winnerIteration == -1)
-					{
-						robot.subtractHealth(rocketDamage);
 					}
 				}
 			}
@@ -177,63 +151,6 @@ public final class InternalArena
 					{
 						robot.subtractHealth(asteroidDamage);
 					}
-				}
-			}
-		}
-		for (var i = 0; i < this.rockets.size(); i++)
-		{
-			final var rocket = this.rockets.get(i);
-			for (var j = 0; j < this.bullets.size(); j++)
-			{
-				final var bullet = this.bullets.get(j);
-				if (rocket.getBounds().intersects(bullet.getBounds()))
-				{
-					rocket.subtractHealth(1);
-					if (rocket.getHealth() <= 0)
-					{
-						this.explosions.add(Explosion.rocket(rocket.getPosition()));
-						this.rockets.remove(i);
-						i--;
-						break;
-					}
-					this.explosions.add(Explosion.bullet(bullet.getPosition()));
-					this.bullets.remove(j);
-					j--;
-				}
-			}
-			for (var j = 0; j < this.rockets.size(); j++)
-			{
-				final var rocket2 = this.rockets.get(j);
-				if (rocket == rocket2)
-				{
-					continue;
-				}
-				if (rocket.getBounds().intersects(rocket2.getBounds()))
-				{
-					this.explosions.add(Explosion.rocket(rocket.getPosition()));
-					this.rockets.remove(i);
-					if (i < j)
-					{
-						j--;
-					}
-					i--;
-					this.explosions.add(Explosion.rocket(rocket2.getPosition()));
-					this.rockets.remove(j);
-					j--;
-				}
-			}
-			for (var j = 0; j < this.asteroids.size(); j++)
-			{
-				final var asteroid = this.asteroids.get(j);
-				if (asteroid.getTimeSinceKill() > 0)
-				{
-					continue;
-				}
-				if (rocket.getBounds().intersects(asteroid.getBounds()))
-				{
-					this.explosions.add(Explosion.rocket(rocket.getPosition()));
-					this.rockets.remove(i);
-					i--;
 				}
 			}
 		}
@@ -280,18 +197,6 @@ public final class InternalArena
 		final var arenaWidth   = arenaBounds.getWidth();
 		final var arenaHeight  = arenaBounds.getHeight();
 		final var outerBorder  = arenaOuterBounds;
-		for (var i = 0; i < this.rockets.size(); i++)
-		{
-			final var rocket = this.rockets.get(i);
-			if ((rocket.getPosition().x < (arenaOriginX - outerBorder)) ||
-				(rocket.getPosition().x > (arenaOriginX + arenaWidth + outerBorder)) ||
-				(rocket.getPosition().y < (arenaOriginY - outerBorder)) ||
-				(rocket.getPosition().y > (arenaOriginY + arenaHeight + outerBorder)))
-			{
-				this.rockets.remove(i);
-				i--;
-			}
-		}
 		for (var i = 0; i < this.bullets.size(); i++)
 		{
 			final var bullet = this.bullets.get(i);
@@ -361,16 +266,6 @@ public final class InternalArena
 		return this.robots.size();
 	}
 	
-	public Rocket getRocket(final int index)
-	{
-		return this.rockets.get(index);
-	}
-	
-	public int getRocketCount()
-	{
-		return this.rockets.size();
-	}
-	
 	public double getSuddenDeathSeverity()
 	{
 		return this.suddenDeathSeverity;
@@ -396,7 +291,6 @@ public final class InternalArena
 	{
 		this.robots    = new ArrayList<>();
 		this.bullets   = new ArrayList<>();
-		this.rockets   = new ArrayList<>();
 		this.asteroids = new ArrayList<>();
 		
 		this.explosions = new ArrayList<>();
@@ -467,10 +361,6 @@ public final class InternalArena
 		for (final Bullet bullet : this.bullets)
 		{
 			bullet.render(g2d);
-		}
-		for (final Rocket rocket : this.rockets)
-		{
-			rocket.render(g2d);
 		}
 		for (final Asteroid asteroid : this.asteroids)
 		{
@@ -608,11 +498,6 @@ public final class InternalArena
 					final var bullet = this.bullets.get(i);
 					this.explosions.add(Explosion.bullet(bullet.getPosition()));
 				}
-				for (var i = 0; i < this.rockets.size(); i++)
-				{
-					final var rocket = this.rockets.get(i);
-					this.explosions.add(Explosion.rocket(rocket.getPosition()));
-				}
 				for (var i = 0; i < this.asteroids.size(); i++)
 				{
 					final var asteroid = this.asteroids.get(i);
@@ -620,7 +505,6 @@ public final class InternalArena
 				}
 				this.robots.clear();
 				this.bullets.clear();
-				this.rockets.clear();
 				this.asteroids.clear();
 			}
 		}
@@ -637,10 +521,6 @@ public final class InternalArena
 		for (final Bullet bullet : this.bullets)
 		{
 			bullet.update();
-		}
-		for (final Rocket rocket : this.rockets)
-		{
-			rocket.update();
 		}
 		for (final Asteroid asteroid : this.asteroids)
 		{

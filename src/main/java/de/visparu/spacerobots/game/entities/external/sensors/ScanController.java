@@ -8,7 +8,6 @@ import de.visparu.spacerobots.game.InternalArena;
 import de.visparu.spacerobots.game.entities.external.scanned.ScanResult;
 import de.visparu.spacerobots.game.entities.internal.Bullet;
 import de.visparu.spacerobots.game.entities.internal.InternalRobot;
-import de.visparu.spacerobots.game.entities.internal.Rocket;
 import de.visparu.spacerobots.settings.GameInfo;
 
 public final class ScanController
@@ -26,8 +25,7 @@ public final class ScanController
 		
 		final List<InternalRobot> robotsDummy  = new ArrayList<>();
 		final List<Bullet>        bulletsDummy = new ArrayList<>();
-		final List<Rocket>        rocketsDummy = new ArrayList<>();
-		this.lastScan = new ScanResult(robotsDummy, bulletsDummy, rocketsDummy, -1);
+		this.lastScan = new ScanResult(robotsDummy, bulletsDummy, -1);
 	}
 	
 	/**
@@ -107,7 +105,6 @@ public final class ScanController
 		
 		final List<InternalRobot> scannedRobots  = new ArrayList<>();
 		final List<Bullet>        scannedBullets = new ArrayList<>();
-		final List<Rocket>        scannedRockets = new ArrayList<>();
 		
 		for (var i = 0; i < this.ia.getRobotCount(); i++)
 		{
@@ -129,16 +126,8 @@ public final class ScanController
 				scannedBullets.add(cur);
 			}
 		}
-		for (var i = 0; i < this.ia.getRocketCount(); i++)
-		{
-			final var cur = this.ia.getRocket(i);
-			if (scanArea.intersects(cur.getBounds()))
-			{
-				scannedRockets.add(cur);
-			}
-		}
 		
-		final var scan = new ScanResult(scannedRobots, scannedBullets, scannedRockets, this.ia.getIteration());
+		final var scan = new ScanResult(scannedRobots, scannedBullets, this.ia.getIteration());
 		this.nextScan = scan;
 		
 		this.ir.setCurrentScan(scanArea, !scannedRobots.isEmpty());
