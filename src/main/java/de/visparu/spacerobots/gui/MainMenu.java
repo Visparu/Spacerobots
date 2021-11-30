@@ -5,34 +5,24 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import de.visparu.spacerobots.game.InternalArena;
 import de.visparu.spacerobots.game.entities.external.Robot;
 import de.visparu.spacerobots.game.entities.internal.InternalRobot;
+import de.visparu.spacerobots.gui.subscribers.MousePressedSubscriber;
 import de.visparu.spacerobots.settings.GameInfo;
 import de.visparu.spacerobots.settings.GraphicsInfo;
 import de.visparu.spacerobots.util.ClassFinder;
 import de.visparu.spacerobots.util.GraphicsHelper;
 import de.visparu.spacerobots.util.Vector2D;
 
-public final class MainMenu implements MouseSubscriber
+public final class MainMenu implements MousePressedSubscriber
 {
-	private final class RobotNameComparator implements Comparator<InternalRobot>
-	{
-		@Override
-		public int compare(final InternalRobot o1, final InternalRobot o2)
-		{
-			return o1.getName().compareTo(o2.getName());
-		}
-	}
-	
 	private static final int SEED = 1337;
 	
 	public static final boolean USE_SEED = false;
@@ -108,7 +98,7 @@ public final class MainMenu implements MouseSubscriber
 			}
 		}
 		
-		this.availableRobots.sort(new RobotNameComparator());
+		this.availableRobots.sort((r1, r2) -> r1.getName().compareTo(r2.getName()));
 		
 		final var canvasWidth  = (int) canvasBounds.getWidth();
 		final var canvasHeight = (int) canvasBounds.getHeight();
@@ -174,18 +164,10 @@ public final class MainMenu implements MouseSubscriber
 		
 		this.initialized = true;
 	}
-	
-	@Override
-	public void mouseMoved(final MouseEvent e)
-	{
 		
-	}
-	
 	@Override
-	public void mousePressed(final MouseEvent e)
+	public void mousePressed(final int x, final int y, final int button)
 	{
-		final var     x          = e.getX();
-		final var     y          = e.getY();
 		final Point2D mousePoint = new Point2D.Double(x, y);
 		if (!this.gameRunning)
 		{
@@ -233,12 +215,6 @@ public final class MainMenu implements MouseSubscriber
 				this.gamePaused = !this.gamePaused;
 			}
 		}
-	}
-	
-	@Override
-	public void mouseReleased(final MouseEvent e)
-	{
-		
 	}
 	
 	public void render(final Graphics2D g2d)
@@ -537,7 +513,7 @@ public final class MainMenu implements MouseSubscriber
 			final var absY = slotSpacing + (slotY * (slotHeight + nameHeight + slotDistanceVert));
 			
 			final var slotImage = new BufferedImage(slotWidth, slotHeight, argbType);
-			final var g2dSlot  = slotImage.createGraphics();
+			final var g2dSlot   = slotImage.createGraphics();
 			this.renderMenuSlotsSingle(g2dSlot, slotWidth, slotHeight, robots.get(i));
 			
 			if (robots.size() >= i)

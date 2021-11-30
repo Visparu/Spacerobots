@@ -7,7 +7,8 @@ public class Visparu extends Robot
 	@Override
 	public String getName()
 	{
-		return "Visparu";
+		throw new RuntimeException();
+//		return "Visparu";
 	}
 
 	@Override

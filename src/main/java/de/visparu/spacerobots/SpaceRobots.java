@@ -1,5 +1,6 @@
-package de.visparu.spacerobots.root;
+package de.visparu.spacerobots;
 
+import de.visparu.spacerobots.framework.Framework;
 import de.visparu.spacerobots.game.InternalArena;
 import de.visparu.spacerobots.gui.InputController;
 import de.visparu.spacerobots.gui.MainMenu;

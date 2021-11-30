@@ -1,4 +1,4 @@
-package de.visparu.spacerobots.root;
+package de.visparu.spacerobots.framework;
 
 import java.awt.Graphics2D;
 
@@ -44,7 +44,7 @@ public final class Framework
 		this.w = w;
 		
 		this.mm = mm;
-		ic.register(mm);
+		ic.registerMouseActionSubscriber(mm);
 		
 		this.init = true;
 	}

@@ -87,7 +87,7 @@ public final class InternalArena
 		}
 	}
 	
-	private void calculateCollisions()
+	private void updateCollisions()
 	{
 		final var bulletDamage   = GameInfo.BULLET_DAMAGE;
 		final var asteroidDamage = GameInfo.ASTEROID_DAMAGE;
@@ -97,7 +97,7 @@ public final class InternalArena
 		final var arenaOrigin      = GraphicsInfo.ARENA_ORIGIN;
 		final var arenaBounds      = GameInfo.ARENA_BOUNDS;
 		final var arenaOuterBounds = GameInfo.ARENA_BOUNDS_OUTER;
-
+		
 		for (var i = 0; i < this.robots.size(); i++)
 		{
 			final var robot = this.robots.get(i);
@@ -173,21 +173,16 @@ public final class InternalArena
 			}
 			for (var j = 0; j < this.asteroids.size(); j++)
 			{
-				if (i == j)
+				if (i != j)
 				{
-					continue;
-				}
-				final var asteroid2 = this.asteroids.get(j);
-				if (asteroid2.getTimeSinceKill() > 0)
-				{
-					continue;
-				}
-				if (asteroid.getBounds().intersects(asteroid2.getBounds()))
-				{
-					this.explosions.add(Explosion.asteroid(asteroid.getPosition()));
-					this.explosions.add(Explosion.asteroid(asteroid2.getPosition()));
-					asteroid.kill();
-					asteroid2.kill();
+					final var asteroid2 = this.asteroids.get(j);
+					if (asteroid2.getTimeSinceKill() <= 0 && asteroid.getBounds().intersects(asteroid2.getBounds()))
+					{
+						this.explosions.add(Explosion.asteroid(asteroid.getPosition()));
+						this.explosions.add(Explosion.asteroid(asteroid2.getPosition()));
+						asteroid.kill();
+						asteroid2.kill();
+					}
 				}
 			}
 		}
@@ -221,15 +216,15 @@ public final class InternalArena
 		}
 	}
 	
-	private void calculateDeaths()
+	private void updateDeaths()
 	{
 		final var asteroidTimeToKill = GraphicsInfo.ASTEROID_KILL_TIME;
-
+		
 		this.robots.stream()
 			.filter(robot -> robot.getHealth() <= 0)
 			.forEach(robot -> this.explosions.add(Explosion.robot(robot.getPosition())));
-
-		this.robots.removeIf(robot -> robot.getHealth() <= 0);		
+		
+		this.robots.removeIf(robot -> robot.getHealth() <= 0);
 		this.asteroids.removeIf(asteroid -> asteroid.getTimeSinceKill() >= asteroidTimeToKill);
 		this.explosions.removeIf(explosion -> explosion.getCurrentSize() <= 1);
 		
@@ -255,7 +250,7 @@ public final class InternalArena
 	{
 		return this.iteration;
 	}
-
+	
 	public InternalRobot getRobot(final int index)
 	{
 		return this.robots.get(index);
@@ -316,11 +311,11 @@ public final class InternalArena
 	private void initStars()
 	{
 		final var canvasBounds = GraphicsInfo.CANVAS_DIMENSION_BOUNDS;
-
+		
 		final var starCount              = GraphicsInfo.ARENA_STAR_COUNT;
 		final var starBrightnessVariance = GraphicsInfo.ARENA_STAR_BRIGHTNESS_VARIANCE;
 		final var starSizeMax            = GraphicsInfo.ARENA_STAR_SIZE_MAX;
-
+		
 		this.stars          = new Vector2D[starCount];
 		this.starBrightness = new double[starCount];
 		this.starSizes      = new int[starCount];
@@ -332,7 +327,7 @@ public final class InternalArena
 			this.stars[i] = starVector;
 			
 			this.starBrightness[i] = 1 - (this.rand.nextDouble() * starBrightnessVariance);
-
+			
 			this.starSizes[i] = this.rand.nextInt(starSizeMax) + 1;
 		}
 	}
@@ -343,7 +338,7 @@ public final class InternalArena
 		final var normalDelimiter  = GameInfo.NORMAL_PLAY_DELIMITER;
 		final var deathDelimiter   = GameInfo.SUDDEN_DEATH_DELIMITER;
 		final var timeoutDelimiter = GameInfo.TIMEOUT_DELIMITER;
-
+		
 		final var shake = (this.iteration >= (normalDelimiter + deathDelimiter)) && gameRunning;
 		if (shake)
 		{
@@ -379,7 +374,7 @@ public final class InternalArena
 		{
 			g2d.translate(-this.currentShakeX, -this.currentShakeY);
 		}
-
+		
 		if (this.iteration < 0)
 		{
 			InternalArenaGraphics.renderInformationStartCountdown(g2d, this.iteration);
@@ -406,10 +401,10 @@ public final class InternalArena
 		final var arenaBounds = GameInfo.ARENA_BOUNDS;
 		
 		final var robotSize = GameInfo.ROBOT_SIZE;
-
+		
 		final var spawns   = new Vector2D[robotClasses.size()];
 		final var headings = new double[robotClasses.size()];
-
+		
 		for (var i = 0; i < spawns.length; i++)
 		{
 			final var x = (this.rand.nextDouble() * (arenaBounds.getWidth() - robotSize)) + arenaOrigin.getX() + (robotSize / 2);
@@ -430,21 +425,30 @@ public final class InternalArena
 	
 	public void update()
 	{
-		final var arenaBounds = GameInfo.ARENA_BOUNDS;
-		final var outerBounds = GameInfo.ARENA_BOUNDS_OUTER;
-		
-		final var normalPlayDelimiter  = GameInfo.NORMAL_PLAY_DELIMITER;
-		final var suddenDeathDelimiter = GameInfo.SUDDEN_DEATH_DELIMITER;
-		final var timeoutDelimiter     = GameInfo.TIMEOUT_DELIMITER;
-		
-		final var suddenDeathSeverityChange = GameInfo.SUDDEN_DEATH_SEVERITY_CHANGE;
-		final var supernovaMaxShake         = GraphicsInfo.SUPERNOVA_SCREEN_SHAKE_MAX_INTENSITY;
-
 		if (this.iteration < 0)
 		{
 			this.iteration++;
 			return;
 		}
+		
+		this.updateSuddenDeathSeverity();
+		this.updateSupernova();
+		this.updateEntities();
+		this.updateCollisions();
+		this.updateDeaths();
+		
+		this.iteration++;
+	}
+	
+	private void updateSuddenDeathSeverity()
+	{
+		final var arenaBounds = GameInfo.ARENA_BOUNDS;
+		final var outerBounds = GameInfo.ARENA_BOUNDS_OUTER;
+		
+		final var suddenDeathSeverityChange = GameInfo.SUDDEN_DEATH_SEVERITY_CHANGE;
+		
+		final var normalPlayDelimiter  = GameInfo.NORMAL_PLAY_DELIMITER;
+		final var suddenDeathDelimiter = GameInfo.SUDDEN_DEATH_DELIMITER;
 		
 		this.suddenDeathSeverity = (this.iteration - normalPlayDelimiter) * suddenDeathSeverityChange;
 		if ((this.suddenDeathSeverity > 0) && (this.winnerIteration == -1))
@@ -467,11 +471,20 @@ public final class InternalArena
 				final var aimVector          = targetVector.sub(spawnVector);
 				final var correctedAimVector = new Vector2D(aimVector.x, -aimVector.y);
 				final var heading            = correctedAimVector.getAngle();
-
+				
 				final var asteroid = new Asteroid(spawnVector, heading);
 				this.asteroids.add(asteroid);
 			}
 		}
+	}
+	
+	private void updateSupernova()
+	{
+		final var normalPlayDelimiter  = GameInfo.NORMAL_PLAY_DELIMITER;
+		final var suddenDeathDelimiter = GameInfo.SUDDEN_DEATH_DELIMITER;
+		final var timeoutDelimiter     = GameInfo.TIMEOUT_DELIMITER;
+		
+		final var supernovaMaxShake = GraphicsInfo.SUPERNOVA_SCREEN_SHAKE_MAX_INTENSITY;
 		
 		if ((this.iteration >= (normalPlayDelimiter + suddenDeathDelimiter)) &&
 			(this.iteration <= (normalPlayDelimiter + suddenDeathDelimiter + timeoutDelimiter)))
@@ -488,21 +501,21 @@ public final class InternalArena
 			
 			if (this.iteration >= (normalPlayDelimiter + suddenDeathDelimiter + timeoutDelimiter))
 			{
-				for (var i = 0; i < this.robots.size(); i++)
-				{
-					final var robot = this.robots.get(i);
-					this.explosions.add(Explosion.robot(robot.getPosition()));
-				}
-				for (var i = 0; i < this.bullets.size(); i++)
-				{
-					final var bullet = this.bullets.get(i);
-					this.explosions.add(Explosion.bullet(bullet.getPosition()));
-				}
-				for (var i = 0; i < this.asteroids.size(); i++)
-				{
-					final var asteroid = this.asteroids.get(i);
-					this.explosions.add(Explosion.asteroid(asteroid.getPosition()));
-				}
+//				for (var i = 0; i < this.robots.size(); i++)
+//				{
+//					final var robot = this.robots.get(i);
+//					this.explosions.add(Explosion.robot(robot.getPosition()));
+//				}
+//				for (var i = 0; i < this.bullets.size(); i++)
+//				{
+//					final var bullet = this.bullets.get(i);
+//					this.explosions.add(Explosion.bullet(bullet.getPosition()));
+//				}
+//				for (var i = 0; i < this.asteroids.size(); i++)
+//				{
+//					final var asteroid = this.asteroids.get(i);
+//					this.explosions.add(Explosion.asteroid(asteroid.getPosition()));
+//				}
 				this.robots.clear();
 				this.bullets.clear();
 				this.asteroids.clear();
@@ -513,7 +526,10 @@ public final class InternalArena
 			this.currentShakeX = 0;
 			this.currentShakeY = 0;
 		}
-		
+	}
+	
+	private void updateEntities()
+	{
 		for (final InternalRobot robot : this.robots)
 		{
 			robot.update(this.winnerIteration != -1);
@@ -530,8 +546,5 @@ public final class InternalArena
 		{
 			explosion.update();
 		}
-		this.calculateCollisions();
-		this.calculateDeaths();
-		this.iteration++;
 	}
 }

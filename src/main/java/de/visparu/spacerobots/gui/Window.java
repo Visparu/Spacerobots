@@ -69,9 +69,9 @@ public final class Window
 	
 	private void initFrameControl(final InputController ic)
 	{
-		this.canvas.addMouseListener(ic);
-		this.canvas.addMouseMotionListener(ic);
-		this.canvas.addKeyListener(ic);
+		this.canvas.addMouseListener(ic.getMouseInputController());
+		this.canvas.addMouseMotionListener(ic.getMouseInputController());
+		this.canvas.addKeyListener(ic.getKeyInputController());
 	}
 	
 	private void initFrameInit()
