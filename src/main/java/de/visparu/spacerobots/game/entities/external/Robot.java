@@ -39,7 +39,7 @@ public abstract class Robot
 	private boolean init = false;
 	
 	/**
-	 * Returns the arena information component of this robot
+	 * @return the arena information component of this robot.
 	 */
 	protected final Arena getArena()
 	{
@@ -47,7 +47,7 @@ public abstract class Robot
 	}
 	
 	/**
-	 * Returns the information component of this robot
+	 * @return the information component of this robot.
 	 */
 	protected final Dashboard getDashboard()
 	{
@@ -55,7 +55,7 @@ public abstract class Robot
 	}
 	
 	/**
-	 * Returns the engine component of this robot
+	 * @return the engine component of this robot.
 	 */
 	protected final EngineController getEngine()
 	{
@@ -63,12 +63,12 @@ public abstract class Robot
 	}
 	
 	/**
-	 * For graphical and identificational purposes only. Give your robot any name you like
+	 * @return the robot's name.
 	 */
 	public abstract String getName();
 	
 	/**
-	 * Returns the scanner component of this robot
+	 * @return the scanner component of this robot.
 	 */
 	protected final ScanController getScanner()
 	{
@@ -76,7 +76,7 @@ public abstract class Robot
 	}
 	
 	/**
-	 * Returns the weapon component of this robot
+	 * @return the weapon component of this robot.
 	 */
 	protected final WeaponController getWeapons()
 	{
@@ -86,7 +86,7 @@ public abstract class Robot
 	/**
 	 * Initialization method for any custom robot.<br>
 	 * DO NOT CALL THIS METHOD FROM INSIDE ANY ROBOT<br>
-	 * Nothing is going to happen anyways though
+	 * You're just going to get a load of exceptions.
 	 */
 	public final void init(final InternalRobot ir, final InternalArena ia)
 	{
@@ -105,12 +105,12 @@ public abstract class Robot
 
 	/**
 	 * Called when a robot is first initialized.<br>
-	 * REPLACES THE CONSTRUCTOR OF A ROBOT, DO NOT USE THE CONSTRUCTOR!!!
+	 * REPLACES THE CONSTRUCTOR OF A ROBOT, DO NOT USE A CONSTRUCTOR!!!
 	 */
 	public abstract void initialize();
 
 	/**
-	 * Called once every iteration (30 times per second)
+	 * Called once every iteration (30 times per second).
 	 */
 	public abstract void update();
 }

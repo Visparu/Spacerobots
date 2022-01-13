@@ -33,6 +33,11 @@ public final class Bullet
 		return new Rectangle2D.Double(x, y, width, height);
 	}
 	
+	public double getHeading()
+	{
+		return this.heading;
+	}
+	
 	public Vector2D getPosition()
 	{
 		return this.position;

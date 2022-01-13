@@ -168,6 +168,7 @@ public final class InternalArena
 				{
 					this.explosions.add(Explosion.bullet(bullet.getPosition()));
 					this.bullets.remove(j);
+					asteroid.hit();
 					j--;
 				}
 			}
@@ -234,6 +235,16 @@ public final class InternalArena
 			this.winnerText      = this.robots.isEmpty() ? "DRAW" : "WINNER";
 			this.winnerName      = this.robots.isEmpty() ? "" : this.robots.get(0).getName();
 		}
+	}
+	
+	public Asteroid getAsteroid(final int index)
+	{
+		return this.asteroids.get(index);
+	}
+	
+	public int getAsteroidCount()
+	{
+		return this.asteroids.size();
 	}
 	
 	public Bullet getBullet(final int index)

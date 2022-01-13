@@ -5,14 +5,15 @@ import java.util.Random;
 import de.visparu.spacerobots.game.entities.external.Robot;
 import de.visparu.spacerobots.game.entities.external.sensors.Dashboard;
 
-// Note that this class EXTENDS Robot. It does not implement it,
-// it does not NOT extend it, it EXTENDS it. Very important.
+//Note that this class extends the Robot class. This is very important and should not be touched.
 public class BasicMover extends Robot
 {
 
-	// Declaration of all needed attributes
+	// Declaration of all needed constants
 	private static final int    BOOST_TIME   = 30;
 	private static final double ACCELERATION = 0.52;
+	
+	// Declaration of all needed attributes
 	private int                 currentBoostTime;
 	private double              heading;
 	
@@ -38,11 +39,11 @@ public class BasicMover extends Robot
 		this.rand             = new Random();
 	}
 
-	// this thing is executed 30 fucking times in one second
+	// This method is executed exactly 30 times per second
 	// so pay attention to what you're doing here,
 	// this will be the behavior of your robot!
-	// You decide if it's a retard or not.
-	// Another thing: If an exception is thrown in this method, you WILL be punished. Severely.
+	// It is up to you whether it will be an idiot or not.
+	// Another thing: If an uncaught exception is thrown in this method, you WILL be punished. Severely.
 	@Override
 	public void update()
 	{
@@ -120,7 +121,7 @@ public class BasicMover extends Robot
 			
 			this.currentBoostTime = BasicMover.BOOST_TIME;
 		}
-		// Boost is still going: move farther into the movement direction and decrement timer
+		// Boost is still going: move further into the movement direction and decrement timer
 		else
 		{
 			super.getEngine().move(this.heading, BasicMover.ACCELERATION);

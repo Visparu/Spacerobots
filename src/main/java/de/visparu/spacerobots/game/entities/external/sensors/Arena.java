@@ -1,6 +1,8 @@
 package de.visparu.spacerobots.game.entities.external.sensors;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.visparu.spacerobots.game.InternalArena;
 import de.visparu.spacerobots.settings.GameInfo;
@@ -15,7 +17,7 @@ public final class Arena
 	}
 	
 	/**
-	 * Returns the size of the arena in pixels
+	 * @return the size of the arena in pixels.
 	 */
 	public Dimension getArenaSize()
 	{
@@ -23,8 +25,8 @@ public final class Arena
 	}
 	
 	/**
-	 * Returns the current game iteration. <br>
-	 * One second contains approximately 30 iterations
+	 * @return the current game iteration. <br>
+	 * There are exactly 30 iterations per second.
 	 */
 	public int getIteration()
 	{
@@ -32,10 +34,23 @@ public final class Arena
 	}
 	
 	/**
-	 * Returns the amount of robots still in the arena
+	 * @return the amount of robots still in the arena.
 	 */
 	public int getRobotCount()
 	{
 		return this.ia.getRobotCount();
+	}
+	
+	/**
+	 * @return a list of the names of all remaining robots.
+	 */
+	public List<String> getRobotNames()
+	{
+		List<String> robotNames = new ArrayList<>();
+		for(var i = 0; i < this.ia.getRobotCount(); i++)
+		{
+			robotNames.add(this.ia.getRobot(i).getName());
+		}
+		return robotNames;
 	}
 }

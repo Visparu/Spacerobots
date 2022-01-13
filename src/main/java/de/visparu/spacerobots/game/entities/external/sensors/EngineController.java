@@ -13,10 +13,10 @@ public final class EngineController
 	}
 	
 	/**
-	 * Returns how much energy would be needed for a specific movement
-	 *
 	 * @param intensity
 	 *            the intensity of the movement
+	 *
+	 * @return how much energy would be needed for a specific movement
 	 */
 	public double getEnergyConsumptionForMove(final double intensity)
 	{
@@ -27,7 +27,7 @@ public final class EngineController
 	}
 	
 	/**
-	 * Returns how much energy would be needed for stopping your robot instantly
+	 * @return how much energy would be needed for stopping your robot instantly
 	 */
 	public double getEnergyConsumptionForStop()
 	{
@@ -44,6 +44,8 @@ public final class EngineController
 	 *            The direction to accelerate into
 	 * @param intensity
 	 *            The intensity of the movement in pixels/second�
+	 *            
+	 * @return true if the move was triggered. False if there is not enough energy.
 	 */
 	public boolean move(final double heading, final double intensity)
 	{
@@ -64,7 +66,9 @@ public final class EngineController
 	}
 	
 	/**
-	 * Stops your robot immediately
+	 * Tries to stop your robot immediately.
+	 * 
+	 * @return true if the stop was triggered. False if there is not enough energy.
 	 */
 	public boolean stop()
 	{
