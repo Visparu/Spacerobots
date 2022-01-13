@@ -15,18 +15,21 @@ public final class Asteroid
 	
 	private boolean killed;
 	private int     timeSinceKill;
-
+	
+	private int health;
+	
 	public Asteroid(final Vector2D position, final double heading)
 	{
 		this.position = position;
 		this.heading  = heading;
 		this.killed   = false;
+		this.health   = 2;
 	}
 	
 	public Rectangle2D getBounds()
 	{
 		final var asteroidSize = GameInfo.ASTEROID_SIZE;
-
+		
 		final var x      = this.position.x - (asteroidSize / 2);
 		final var y      = this.position.y - (asteroidSize / 2);
 		final var width  = asteroidSize;
@@ -39,16 +42,35 @@ public final class Asteroid
 		return this.position;
 	}
 	
+	public double getHeading()
+	{
+		return this.heading;
+	}
+	
 	public int getTimeSinceKill()
 	{
 		return this.timeSinceKill;
+	}
+	
+	public int getHealth()
+	{
+		return this.health;
+	}
+	
+	public void hit()
+	{
+		this.health--;
+		if (this.health <= 0)
+		{
+			this.kill();
+		}
 	}
 	
 	public void kill()
 	{
 		this.killed = true;
 	}
-
+	
 	public void render(final Graphics2D g2d)
 	{
 		AsteroidGraphics.renderTail(g2d, this.position, this.heading, this.timeSinceKill);
@@ -61,7 +83,7 @@ public final class Asteroid
 	public void update()
 	{
 		final var asteroidSpeed = GameInfo.ASTEROID_SPEED;
-
+		
 		if (!this.killed)
 		{
 			final var dirX = Math.cos(Math.toRadians(this.heading));

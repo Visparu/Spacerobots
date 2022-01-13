@@ -19,7 +19,7 @@ public final class WeaponController
 	}
 	
 	/**
-	 * Returns the energy needed for a bullet shot
+	 * @return the energy needed for a bullet shot
 	 */
 	public double getEnergyConsumptionForBulletShot()
 	{
@@ -31,6 +31,8 @@ public final class WeaponController
 	 *
 	 * @param heading
 	 *            The direction to shoot towards in degrees
+	 *            
+	 * @return true if the shot was triggered. False if there is not enough energy.
 	 */
 	public boolean shootBullet(final double heading)
 	{
@@ -57,6 +59,8 @@ public final class WeaponController
 	 *
 	 * @param aimPoint
 	 *            The point to shoot towards
+	 *            
+	 * @return true if the shot was triggered. False if there is not enough energy.
 	 */
 	public boolean shootBullet(final Vector2D aimPoint)
 	{

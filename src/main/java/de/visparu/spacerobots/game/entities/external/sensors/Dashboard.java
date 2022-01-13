@@ -28,7 +28,7 @@ public final class Dashboard
 	}
 	
 	/**
-	 * Returns the current energy of your robot.<br>
+	 * @return the current energy of your robot.<br>
 	 * Energy is needed for every action your robot performs.
 	 */
 	public double getEnergy()
@@ -37,11 +37,11 @@ public final class Dashboard
 	}
 	
 	/**
-	 * Returns the current heading of your robot in degrees<br>
-	 * 0� = east<br>
-	 * 90� = north<br>
-	 * 180� = west<br>
-	 * 270� = south<br>
+	 * @return the current heading of your robot in degrees.<br>
+	 * 0 = east<br>
+	 * 90 = north<br>
+	 * 180 = west<br>
+	 * 270 = south<br>
 	 */
 	public double getHeading()
 	{
@@ -49,7 +49,7 @@ public final class Dashboard
 	}
 	
 	/**
-	 * Returns the current health of your robot.<br>
+	 * @return the current health of your robot.<br>
 	 * If your robot's health drops to 0, it is destroyed.
 	 */
 	public double getHealth()
@@ -58,7 +58,7 @@ public final class Dashboard
 	}
 	
 	/**
-	 * Returns the current position of your robot's center point in the arena.<br>
+	 * @return the current position of your robot's center point in the arena.<br>
 	 * Top Left: 0, 0<br>
 	 * Top Right: arenaWidth, 0<br>
 	 * Bottom Left: 0, arenaHeight<br>
@@ -72,7 +72,7 @@ public final class Dashboard
 	}
 	
 	/**
-	 * Returns the current speed of your robot in pixels/second
+	 * @return the current speed of your robot in pixels/second.
 	 */
 	public double getSpeed()
 	{
@@ -80,9 +80,7 @@ public final class Dashboard
 	}
 	
 	/**
-	 * Returns a value indicating if your robot is currently hitting a wall
-	 *
-	 * @return a "WallCollision" object
+	 * @return a value indicating if your robot is currently hitting a wall.
 	 */
 	public WallCollision getWallCollision()
 	{

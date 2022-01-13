@@ -6,6 +6,7 @@ import java.util.List;
 
 import de.visparu.spacerobots.game.InternalArena;
 import de.visparu.spacerobots.game.entities.external.scanned.ScanResult;
+import de.visparu.spacerobots.game.entities.internal.Asteroid;
 import de.visparu.spacerobots.game.entities.internal.Bullet;
 import de.visparu.spacerobots.game.entities.internal.InternalRobot;
 import de.visparu.spacerobots.settings.GameInfo;
@@ -23,18 +24,19 @@ public final class ScanController
 		this.ir = ir;
 		this.ia = ia;
 		
-		final List<InternalRobot> robotsDummy  = new ArrayList<>();
-		final List<Bullet>        bulletsDummy = new ArrayList<>();
-		this.lastScan = new ScanResult(robotsDummy, bulletsDummy, -1);
+		final List<InternalRobot> robotsDummy    = new ArrayList<>();
+		final List<Bullet>        bulletsDummy   = new ArrayList<>();
+		final List<Asteroid>      asteroidsDummy = new ArrayList<>();
+		this.lastScan = new ScanResult(robotsDummy, bulletsDummy, asteroidsDummy, -1);
 	}
 	
 	/**
-	 * Returns the energy that has to be expended for a specific scan
-	 *
 	 * @param distance
 	 *            The distance to scan from your robot's center point in pixels
 	 * @param aperture
 	 *            The aperture of the scan arc in degrees
+	 *
+	 * @return the energy that has to be expended for a specific scan
 	 */
 	public double getEnergyConsumptionForScan(final double distance, final double aperture)
 	{
@@ -52,7 +54,7 @@ public final class ScanController
 	}
 	
 	/**
-	 * Returns an object holding the last scan's results
+	 * @return an object holding the last scan's results
 	 */
 	public ScanResult getLastScanResult()
 	{
@@ -103,8 +105,9 @@ public final class ScanController
 		
 		final Arc2D scanArea = new Arc2D.Double(x, y, width, height, heading, aperture, arcPie);
 		
-		final List<InternalRobot> scannedRobots  = new ArrayList<>();
-		final List<Bullet>        scannedBullets = new ArrayList<>();
+		final List<InternalRobot> scannedRobots    = new ArrayList<>();
+		final List<Bullet>        scannedBullets   = new ArrayList<>();
+		final List<Asteroid>      scannedAsteroids = new ArrayList<>();
 		
 		for (var i = 0; i < this.ia.getRobotCount(); i++)
 		{
@@ -126,8 +129,16 @@ public final class ScanController
 				scannedBullets.add(cur);
 			}
 		}
+		for (var i = 0; i < this.ia.getAsteroidCount(); i++)
+		{
+			final var cur = this.ia.getAsteroid(i);
+			if (scanArea.intersects(cur.getBounds()))
+			{
+				scannedAsteroids.add(cur);
+			}
+		}
 		
-		final var scan = new ScanResult(scannedRobots, scannedBullets, this.ia.getIteration());
+		final var scan = new ScanResult(scannedRobots, scannedBullets, scannedAsteroids, this.ia.getIteration());
 		this.nextScan = scan;
 		
 		this.ir.setCurrentScan(scanArea, !scannedRobots.isEmpty());
